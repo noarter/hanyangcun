@@ -62,12 +62,12 @@ public interface IOrderDao {
     @Select("<script>" +
             "select * from t_order " +
             "<where>" +
-            "<if test=\"orderNo != null and orderNo != '' \"> and order_no = #{orderNo}</if>" +
+            "<if test=\"orderNo != null and orderNo != '' \"> and order_no like concat('%',#{orderNo},'%')</if>" +
             "<if test=\"orderType != null and orderType != '' \"> and order_type = #{orderType}</if>" +
             "<if test=\"linkName != null and linkName != '' \"> and link_name = #{linkName}</if>" +
             "<if test=\"linkPhone != null and linkPhone != '' \"> and link_phone = #{linkPhone}</if>" +
-            "<if test=\"guests != null and guests != '' \"> and guests = #{guests}</if>" +
-            "<if test=\"guestsPhone != null and guestsPhone != '' \"> and guests_phone = #{guestsPhone}</if>" +
+            "<if test=\"guests != null and guests != '' \"> and guests like concat('%',#{guests},'%')</if>" +
+            "<if test=\"guestsPhone != null and guestsPhone != '' \"> and guests_phone like concat('%',#{guestsPhone},'%')</if>" +
             "<if test=\"orderStatus != null and orderStatus != '' \"> and order_status = #{orderStatus}</if>" +
             "<if test=\"orderTime != null and orderTime != '' \"> and order_time = #{orderTime}</if>" +
             "</where>" +

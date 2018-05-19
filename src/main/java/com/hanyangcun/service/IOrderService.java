@@ -11,7 +11,7 @@ public interface IOrderService {
 
     void update(Order order) throws ErrorCodeException;
 
-    PageInfo<Order> getList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException;
+    PageInfo<Order> getPagedList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException;
 
     Order getOrderDetailByOrderNo(String orderNO) throws ErrorCodeException;
 

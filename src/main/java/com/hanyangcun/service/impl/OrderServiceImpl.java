@@ -30,7 +30,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public PageInfo<Order> getList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException {
+    public PageInfo<Order> getPagedList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException {
         PageHelper.startPage(pageIndex, pageSize);
         return new PageInfo<>(orderDao.getList(order));
     }

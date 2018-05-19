@@ -1,5 +1,6 @@
 package com.hanyangcun.service;
 
+import com.github.pagehelper.PageInfo;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Order;
 
@@ -10,7 +11,7 @@ public interface IOrderService {
 
     void update(Order order) throws ErrorCodeException;
 
-    List<Order> getList(Order order) throws ErrorCodeException;
+    PageInfo<Order> getPagedList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException;
 
     Order getOrderDetailByOrderNo(String orderNO) throws ErrorCodeException;
 

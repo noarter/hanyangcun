@@ -1,5 +1,7 @@
 package com.hanyangcun.service.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanyangcun.dao.IOrderDao;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Order;
@@ -8,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -25,13 +25,14 @@ public class OrderServiceImpl implements IOrderService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
-    public void update(Order order) throws ErrorCodeException{
+    public void update(Order order) throws ErrorCodeException {
         orderDao.update(order);
     }
 
     @Override
-    public List<Order> getList(Order order) throws ErrorCodeException {
-        return orderDao.getList(order);
+    public PageInfo<Order> getPagedList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException {
+        PageHelper.startPage(pageIndex, pageSize);
+        return new PageInfo<>(orderDao.getList(order));
     }
 
     @Override

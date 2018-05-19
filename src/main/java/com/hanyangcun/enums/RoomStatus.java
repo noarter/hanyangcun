@@ -1,6 +1,6 @@
 package com.hanyangcun.enums;
 
-public enum ActivityStatus {
+public enum RoomStatus {
     OUT_OF_STOCK(2, "下架"),
     ON_STOCK(1, "上架");
     private Integer status;
@@ -14,7 +14,7 @@ public enum ActivityStatus {
         return description;
     }
 
-    ActivityStatus(Integer status, String description) {
+    RoomStatus(Integer status, String description) {
         this.status = status;
         this.description = description;
     }

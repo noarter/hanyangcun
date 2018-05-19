@@ -21,11 +21,14 @@ public interface IActivityDao {
             @Result(column = "create_time", property = "createTime"),
             @Result(column = "update_time", property = "updateTime")
     })
-    Activity getActivityById(@Param("id") Long id);
+    Activity getById(@Param("id") Long id);
 
     @Select("<script>" +
-            "select * from t_activity " +
+            "select *,if(now() &lt; start_time,1,if(now() &gt; end_time,3,2)) as activityStatus from t_activity " +
             "<where>" +
+            "<if test=\"activityStatus == 1 \"> and now() &lt; start_time</if>" +
+            "<if test=\"activityStatus == 2 \"> and now() &gt; start_time and now() &lt; end_time</if>" +
+            "<if test=\"activityStatus == 3 \"> and now() &gt; end_time</if>" +
             "<if test=\"username != null and username != '' \"> and username = #{username}</if>" +
             "<if test=\"content != null and content != '' \"> and content = #{content}</if>" +
             "<if test=\"startTime != null and startTime != '' \"> and start_time &gt; #{startTime}</if>" +

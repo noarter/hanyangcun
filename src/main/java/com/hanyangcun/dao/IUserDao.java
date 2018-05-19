@@ -34,7 +34,7 @@ public interface IUserDao {
             @Result(column = "create_time", property = "createTime"),
             @Result(column = "update_time", property = "updateTime"),
     })
-    User getUserByUsernameOrId(User user);
+    User get(User user);
 
     @Select("<script>" +
             "select id,username,password,salt,locked,create_time,update_time from t_user " +

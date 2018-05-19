@@ -10,9 +10,6 @@ public enum StatusCode {
     /** 系统错误 */
     SYSTEM_FAILURE(500, "服务异常"),
 
-    /** 参数为空 */
-    NULL_ARGUMENT(1000, "参数为空"),
-
     /** 参数不正确 */
     ILLEGAL_ARGUMENT(1001, "参数不正确"),
 

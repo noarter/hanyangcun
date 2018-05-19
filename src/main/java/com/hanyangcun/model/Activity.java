@@ -17,7 +17,10 @@ public class Activity {
     private Date endTime;
     private float discountPrice;
     private Integer useCount;
+    //状态：1-上架2-下架
     private Integer status;
     private Date createTime;
     private Date updateTime;
+    //活动状态：1-未开始2-已开始3-已结束
+    private Integer activityStatus;
 }

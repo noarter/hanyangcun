@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(description = "用户操作相关接口")
@@ -29,6 +30,12 @@ public class UserController {
     private IUserService userService;
 
     @ApiOperation(value = "登陆", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 1001, message = "参数不正确"),
+            @ApiResponse(code = 1003, message = "密码错误"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
     @PostMapping("/login")
     public BaseResponse<Map> login(@RequestBody User user, Device device) {
         BaseResponse<Map> baseResponse = new BaseResponse<>();
@@ -36,7 +43,7 @@ public class UserController {
         String username = user.getUsername();
         String password = user.getPassword();
         try {
-            User userInfo = userService.getUserByUsernameOrId(user);
+            User userInfo = userService.get(user);
             if (userInfo == null)
                 throw new ErrorCodeException(StatusCode.USER_NOT_EXIST.getCode(), StatusCode.USER_NOT_EXIST.getMsg());
 
@@ -49,7 +56,6 @@ public class UserController {
             String token = JWTUtil.createToken(username, device);
 
             Map map = new HashMap();
-
             map.put("access_token", token);
 
             baseResponse.setData(map);
@@ -82,10 +88,93 @@ public class UserController {
             Map map = new HashMap();
             map.put("refresh_token", newToken);
             baseResponse.setData(map);
-        } catch (Exception e) {
-            baseResponse.setCode(500);
-            baseResponse.setMsg(e.getMessage());
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
             log.error("登录账户信息异常:{}", e.getMessage(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "新增管理用户信息", notes = "")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @PostMapping("/insert")
+    public BaseResponse insert(HttpServletRequest request, @RequestBody User user) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
+            userService.insert(user);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("添加账户信息异常:{}", e.getMessage(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "修改管理用户信息", notes = "")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 1001, message = "参数不正确"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @PatchMapping("/update")
+    public BaseResponse update(HttpServletRequest request, @RequestBody User user) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
+            if (user.getId() == null)
+                throw new ErrorCodeException(StatusCode.ILLEGAL_ARGUMENT.getCode(), StatusCode.ILLEGAL_ARGUMENT.getMsg());
+
+            userService.update(user);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("修改账户信息异常:{}", e.getMessage(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "获取用户列表信息", notes = "")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @PostMapping("/getPagedList")
+    public BaseResponse<List<User>> getPagedList(HttpServletRequest request,@RequestBody User user){
+        BaseResponse<List<User>> baseResponse = new BaseResponse<>();
+        try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
+            List<User> users = userService.getList(user);
+            baseResponse.setData(users);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("获取用户列表信息异常:{}", e.getMessage(), e);
         }
         return baseResponse;
     }

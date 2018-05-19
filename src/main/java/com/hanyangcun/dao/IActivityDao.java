@@ -26,8 +26,8 @@ public interface IActivityDao {
     @Select("<script>" +
             "select * from t_activity " +
             "<where>" +
-            "<if test=\"username != null and username != '' \"> and username = #{username}</if>" +
-            "<if test=\"content != null and content != '' \"> and content = #{content}</if>" +
+            "<if test=\"name != null and username != '' \"> and name like '%'#{name}'%'</if>" +
+            "<if test=\"content != null and content != '' \"> and content like '%'#{content}'%'</if>" +
             "<if test=\"startTime != null and startTime != '' \"> and start_time &gt; #{startTime}</if>" +
             "<if test=\"endTime != null and endTime != '' \"> and end_time &lt; #{endTime}</if>" +
             "</where>" +

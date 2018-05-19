@@ -13,7 +13,8 @@ public class Order {
     private Long id;
     private String orderNo;
     private Integer orderType;
-    private String fromTheTime;
+    private Date inTime;
+    private Date outTime;
     private Integer roomsNumber;
     private Integer nights;
     private Integer people;

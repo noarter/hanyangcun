@@ -21,6 +21,12 @@ public enum StatusCode {
 
     /** 密码错误 */
     PASSWORD_ERROR(1003, "密码错误"),
+
+    /** 数据不存在 */
+    DATA_NOTFOUND(1004, "数据不存在"),
+
+    /** 超过入住时间 */
+    IN_TIME_OUTRANGE(1005, "入住时间前二天内，无法取消订单"),
     ;
     /** 枚举值 */
     private int code;

@@ -9,6 +9,7 @@ import java.util.List;
 public interface IRoomsDao {
     @Insert("insert into t_rooms (id, type, room_number, used_room, remained_room, room_price, discount_price, discount_rate, week_date, status, create_time, update_time) " +
             "values (#{id}, #{type}, #{roomNumber}, #{usedRoom}, #{remainedRoom}, #{roomPrice}, #{discountPrice}, #{discountRate}, #{weekDate}, #{status}, #{createTime}, #{updateTime})")
+    @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(Rooms rooms);
 
     @Update("<script>" +

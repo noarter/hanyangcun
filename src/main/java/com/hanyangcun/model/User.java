@@ -17,4 +17,6 @@ public class User {
     private Integer locked;
     private Date createTime;
     private Date updateTime;
+
+    private String oldPassword;
 }

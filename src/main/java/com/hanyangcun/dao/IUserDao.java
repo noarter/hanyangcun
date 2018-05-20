@@ -8,8 +8,16 @@ import java.util.List;
 @Mapper
 public interface IUserDao {
 
-    @Insert("insert into t_user (id, username, password, salt, locked, create_time, update_time) " +
-            "values (#{id}, #{username}, #{password}, #{salt}, #{locked}, #{createTime}, #{updateTime})")
+    @Insert("<script>" +
+            "insert into t_user " +
+            "<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\" >" +
+            "id, username, password, salt, locked, create_time, update_time" +
+            "</trim>" +
+            "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >" +
+            "#{id}, #{username}, #{password}, #{salt}, #{locked}, #{createTime}, #{updateTime}" +
+            "</trim>" +
+            "</script>")
+    @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(User user);
 
     @Update("<script>" +
@@ -36,6 +44,20 @@ public interface IUserDao {
     })
     User get(User user);
 
+    @Select("select id,username,password,salt,locked,create_time,update_time from t_user where id = #{id} and locked = 0")
+    @Results({
+            @Result(column = "create_time", property = "createTime"),
+            @Result(column = "update_time", property = "updateTime"),
+    })
+    User getById(@Param("id") Long id);
+
+    @Select("select id,username,password,salt,locked,create_time,update_time from t_user where username = #{username} and locked = 0")
+    @Results({
+            @Result(column = "create_time", property = "createTime"),
+            @Result(column = "update_time", property = "updateTime"),
+    })
+    User getByName(String username);
+
     @Select("<script>" +
             "select id,username,password,salt,locked,create_time,update_time from t_user " +
             "<where>" +
@@ -47,4 +69,5 @@ public interface IUserDao {
             @Result(column = "update_time", property = "updateTime"),
     })
     List<User> getList(User user);
+
 }

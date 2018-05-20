@@ -11,7 +11,12 @@ public interface IUserService {
 
     User get(User user) throws ErrorCodeException;
 
+    User getByName(String username);
+
+    User getById(Long id) throws ErrorCodeException;
+
     void insert(User user) throws ErrorCodeException;
 
     void update(User user) throws ErrorCodeException;
+
 }

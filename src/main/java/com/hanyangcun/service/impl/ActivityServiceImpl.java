@@ -1,5 +1,6 @@
 package com.hanyangcun.service.impl;
 
+import com.hanyangcun.constant.SysConstants;
 import com.hanyangcun.dao.IActivityDao;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Activity;
@@ -27,6 +28,9 @@ public class ActivityServiceImpl implements IActivityService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     @Override
     public void insert(Activity activity) throws ErrorCodeException {
+        activity.setStatus(SysConstants.STATUS_ONLINE);
+        activity.setCreateTime(new Date());
+        activity.setUpdateTime(activity.getCreateTime());
         activityDao.insert(activity);
     }
 
@@ -39,6 +43,7 @@ public class ActivityServiceImpl implements IActivityService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     @Override
     public void update(Activity activity) throws ErrorCodeException {
+        activity.setUpdateTime(activity.getCreateTime());
         activityDao.update(activity);
     }
 

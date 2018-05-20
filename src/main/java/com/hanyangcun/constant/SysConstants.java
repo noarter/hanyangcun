@@ -14,4 +14,7 @@ public class SysConstants {
     public static final int STATUS_UN_LOCKED = 0;
     public static final int STATUS_LOCKED = 1;
 
+    public static final int STATUS_ONLINE = 1;
+    public static final int STATUS_OFFLINE = 2;
+
 }

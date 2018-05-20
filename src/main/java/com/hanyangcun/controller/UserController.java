@@ -43,7 +43,7 @@ public class UserController {
         String username = user.getUsername();
         String password = user.getPassword();
         try {
-            User userInfo = userService.get(user);
+            User userInfo = userService.getByName(username);
             if (userInfo == null)
                 throw new ErrorCodeException(StatusCode.USER_NOT_EXIST.getCode(), StatusCode.USER_NOT_EXIST.getMsg());
 
@@ -88,6 +88,39 @@ public class UserController {
             Map map = new HashMap();
             map.put("refresh_token", newToken);
             baseResponse.setData(map);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("刷新token异常:{}", e.getMessage(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "获取管理用户信息", notes = "")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @GetMapping("/get")
+    public BaseResponse<User> get(HttpServletRequest request){
+        BaseResponse<User> baseResponse = new BaseResponse<>();
+        try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
+            String username = JWTUtil.getUsernameFromToken(token);
+
+            User user = userService.getByName(username);
+            if (user!=null){
+                user.setPassword(null);
+                user.setSalt(null);
+            }
+            baseResponse.setData(user);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
@@ -143,6 +176,14 @@ public class UserController {
             if (user.getId() == null)
                 throw new ErrorCodeException(StatusCode.ILLEGAL_ARGUMENT.getCode(), StatusCode.ILLEGAL_ARGUMENT.getMsg());
 
+            if (StringUtils.isNotBlank(user.getPassword())){
+                User u = userService.getById(user.getId());
+                String encPassword = SHA512Util.encry512(user.getOldPassword() + u.getUsername() + u.getSalt());
+                if (!u.getPassword().equals(encPassword))
+                    throw new ErrorCodeException(StatusCode.PASSWORD_ERROR.getCode(), StatusCode.PASSWORD_ERROR.getMsg());
+                String newPassword = SHA512Util.encry512(user.getPassword() + u.getUsername() + u.getSalt());
+                user.setPassword(newPassword);
+            }
             userService.update(user);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());

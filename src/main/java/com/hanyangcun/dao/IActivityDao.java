@@ -8,8 +8,22 @@ import java.util.List;
 @Mapper
 public interface IActivityDao {
 
-    @Insert("insert into t_activity (id, name, content, start_time, end_time, discount_price, use_count, status, create_time, update_time) " +
-            "values (#{id}, #{name}, #{content}, #{startTime}, #{endTime}, #{discountPrice}, #{useCount}, #{status}, #{createTime}, #{updateTime})")
+    @Insert("<script>" +
+            "insert into t_activity " +
+            "<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\" >" +
+            "id, name, content, start_time, end_time," +
+            "<if test=\"discountPrice != null and discountPrice != '' \"> discount_price,</if>" +
+            "<if test=\"useCount != null and useCount != '' \"> use_count,</if>" +
+            "status, create_time, update_time" +
+            "</trim>" +
+            "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >" +
+            "#{id}, #{name}, #{content}, #{startTime}, #{endTime}," +
+            "<if test=\"discountPrice != null and discountPrice != '' \"> #{discountPrice},</if>" +
+            "<if test=\"useCount != null and useCount != '' \"> #{useCount},</if>" +
+            " #{status}, #{createTime}, #{updateTime}" +
+            "</trim>" +
+            "</script>")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Activity activity);
 
     @Select("select * from t_activity where id = #{id}")

@@ -10,6 +10,7 @@ import java.util.List;
 public interface IAccountDao {
     @Insert("insert into t_account (id, name, phone, sex, create_time, update_time) " +
             "values (#{id}, #{name}, #{phone}, #{sex}, #{createTime}, #{updateTime})")
+    @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(Account account);
 
     @Update("<script>" +

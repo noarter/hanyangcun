@@ -9,6 +9,7 @@ import java.util.List;
 public interface IOrderDao {
     @Insert("insert into t_order (id, order_no, order_type, in_time, out_time, rooms_number, nights, people, link_name, link_phone, guests, guests_phone, order_total, discount_price, actual_amount, order_status, order_time, update_time) " +
             "values (#{id}, #{orderNo}, #{orderType}, #{inTime}, .#{outTime}, #{roomsNumber}, #{nights}, #{people}, #{linkName}, #{linkPhone}, #{guests}, #{guestsPhone}, #{orderTotal}, #{discountPrice}, #{actualAmount}, #{orderStatus}, #{orderTime}, #{updateTime})")
+    @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(Order order);
 
     @Update("<script>" +

@@ -7,8 +7,15 @@ import java.util.List;
 
 @Mapper
 public interface IOrderDao {
-    @Insert("insert into t_order (id, order_no, order_type, in_time, out_time, rooms_number, nights, people, link_name, link_phone, guests, guests_phone, order_total, discount_price, actual_amount, order_status, order_time, update_time) " +
-            "values (#{id}, #{orderNo}, #{orderType}, #{inTime}, .#{outTime}, #{roomsNumber}, #{nights}, #{people}, #{linkName}, #{linkPhone}, #{guests}, #{guestsPhone}, #{orderTotal}, #{discountPrice}, #{actualAmount}, #{orderStatus}, #{orderTime}, #{updateTime})")
+    @Insert("<script>" +
+            "insert into t_order " +
+            "<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\" >" +
+            "id, order_no, order_type, in_time, out_time, rooms_number, nights, people, adult_people, child_people, link_name, link_phone, guests, guests_phone, order_total, discount_price, actual_amount, order_status, order_time, update_time" +
+            "</trim>" +
+            "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >" +
+            "#{id}, #{orderNo}, #{orderType}, #{inTime}, #{outTime}, #{roomsNumber}, #{nights}, #{people}, #{adultPeople}, #{childPeople}, #{linkName}, #{linkPhone}, #{guests}, #{guestsPhone}, #{orderTotal}, #{discountPrice}, #{actualAmount}, #{orderStatus}, #{orderTime}, #{updateTime}" +
+            "</trim>" +
+            "</script>")
     @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(Order order);
 
@@ -29,6 +36,8 @@ public interface IOrderDao {
             @Result(column = "in_time", property = "inTime"),
             @Result(column = "out_time", property = "outTime"),
             @Result(column = "rooms_number", property = "roomsNumber"),
+            @Result(column = "adult_people", property = "adultPeople"),
+            @Result(column = "child_people", property = "childPeople"),
             @Result(column = "link_name", property = "linkName"),
             @Result(column = "link_phone", property = "linkPhone"),
             @Result(column = "guests_phone", property = "guestsPhone"),
@@ -48,6 +57,8 @@ public interface IOrderDao {
             @Result(column = "in_time", property = "inTime"),
             @Result(column = "out_time", property = "outTime"),
             @Result(column = "rooms_number", property = "roomsNumber"),
+            @Result(column = "adult_people", property = "adultPeople"),
+            @Result(column = "child_people", property = "childPeople"),
             @Result(column = "link_name", property = "linkName"),
             @Result(column = "link_phone", property = "linkPhone"),
             @Result(column = "guests_phone", property = "guestsPhone"),
@@ -63,14 +74,14 @@ public interface IOrderDao {
     @Select("<script>" +
             "select * from t_order " +
             "<where>" +
-            "<if test=\"orderNo != null and orderNo != '' \"> and order_no like concat('%',#{orderNo},'%')</if>" +
-            "<if test=\"orderType != null and orderType != '' \"> and order_type = #{orderType}</if>" +
-            "<if test=\"linkName != null and linkName != '' \"> and link_name = #{linkName}</if>" +
-            "<if test=\"linkPhone != null and linkPhone != '' \"> and link_phone = #{linkPhone}</if>" +
+            "<if test=\"orderNo != null and orderNo != ''\"> and order_no like concat('%',#{orderNo},'%')</if>" +
+            "<if test=\"orderType != null\"> and order_type = #{orderType}</if>" +
+            "<if test=\"linkName != null and linkName != ''\"> and link_name = #{linkName}</if>" +
+            "<if test=\"linkPhone != null\"> and link_phone = #{linkPhone}</if>" +
             "<if test=\"guests != null and guests != '' \"> and guests like concat('%',#{guests},'%')</if>" +
-            "<if test=\"guestsPhone != null and guestsPhone != '' \"> and guests_phone like concat('%',#{guestsPhone},'%')</if>" +
-            "<if test=\"orderStatus != null and orderStatus != '' \"> and order_status = #{orderStatus}</if>" +
-            "<if test=\"orderTime != null and orderTime != '' \"> and order_time = #{orderTime}</if>" +
+            "<if test=\"guestsPhone != null\"> and guests_phone like concat('%',#{guestsPhone},'%')</if>" +
+            "<if test=\"orderStatus != null\"> and order_status = #{orderStatus}</if>" +
+            "<if test=\"orderTime != null\"> and order_time = #{orderTime}</if>" +
             "</where>" +
             "</script>")
     @Results({
@@ -79,6 +90,8 @@ public interface IOrderDao {
             @Result(column = "in_time", property = "inTime"),
             @Result(column = "out_time", property = "outTime"),
             @Result(column = "rooms_number", property = "roomsNumber"),
+            @Result(column = "adult_people", property = "adultPeople"),
+            @Result(column = "child_people", property = "childPeople"),
             @Result(column = "link_name", property = "linkName"),
             @Result(column = "link_phone", property = "linkPhone"),
             @Result(column = "guests_phone", property = "guestsPhone"),

@@ -1,5 +1,7 @@
 package com.hanyangcun.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanyangcun.constant.StatusCode;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.User;
@@ -62,7 +64,7 @@ public class UserController {
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
-            log.error("登录账户信息异常:{}", e.getMsg(), e);
+            log.error("登录用户信息异常:{}", e.getMsg(), e);
         }
         return baseResponse;
     }
@@ -124,7 +126,7 @@ public class UserController {
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
-            log.error("登录账户信息异常:{}", e.getMessage(), e);
+            log.error("获取管理用户信息异常:{}", e.getMessage(), e);
         }
         return baseResponse;
     }
@@ -150,7 +152,7 @@ public class UserController {
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
-            log.error("添加账户信息异常:{}", e.getMessage(), e);
+            log.error("添加用户信息异常:{}", e.getMessage(), e);
         }
         return baseResponse;
     }
@@ -188,7 +190,7 @@ public class UserController {
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
-            log.error("修改账户信息异常:{}", e.getMessage(), e);
+            log.error("修改管理用户信息异常:{}", e.getMessage(), e);
         }
         return baseResponse;
     }
@@ -203,15 +205,18 @@ public class UserController {
             @ApiResponse(code = 500, message = "服务异常")
     })
     @PostMapping("/getPagedList")
-    public BaseResponse<List<User>> getPagedList(HttpServletRequest request,@RequestBody User user){
-        BaseResponse<List<User>> baseResponse = new BaseResponse<>();
+    public BaseResponse getPagedList(HttpServletRequest request,@RequestBody User user){
+        BaseResponse baseResponse = new BaseResponse();
         try {
             String token = HttpToken.getToken(request);
             if (StringUtils.isBlank(token))
                 throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
 
+            PageHelper.startPage(user.getPageNum(), user.getPageSize());
+
             List<User> users = userService.getList(user);
-            baseResponse.setData(users);
+
+            baseResponse.setData(new PageInfo<>(users));
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());

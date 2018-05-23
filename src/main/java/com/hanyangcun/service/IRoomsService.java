@@ -1,20 +1,20 @@
 package com.hanyangcun.service;
 
-import com.github.pagehelper.PageInfo;
+import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Rooms;
 
 import java.util.List;
 
 public interface IRoomsService {
 
-    PageInfo<Rooms> getPagedList(Integer pageIndex, Integer pageSize, Rooms rooms);
+    List<Rooms> getList(Rooms rooms) throws ErrorCodeException;
 
-    void update(Rooms rooms);
+    Rooms get(Long id) throws ErrorCodeException;
 
-    Rooms get(Long id);
+    void insert(Rooms rooms) throws ErrorCodeException;
 
-    void updateBatch(Rooms rooms, List<Long> ids);
+    void update(Rooms rooms) throws ErrorCodeException;
 
-    void insert(Rooms rooms);
+    void updateBatch(String weekDate, List<Long> ids) throws ErrorCodeException;
 
 }

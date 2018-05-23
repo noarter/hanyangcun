@@ -1,8 +1,7 @@
 package com.hanyangcun.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.hanyangcun.dao.IRoomsDao;
+import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Rooms;
 import com.hanyangcun.service.IRoomsService;
 import org.springframework.beans.BeanUtils;
@@ -22,39 +21,42 @@ public class RoomsServiceImpl implements IRoomsService {
     private IRoomsDao roomsDao;
 
     @Override
-    public PageInfo<Rooms> getPagedList(Integer pageIndex, Integer pageSize, Rooms rooms) {
-        PageHelper.startPage(pageIndex, pageSize);
-        List<Rooms> list = roomsDao.getList(rooms);
-        return new PageInfo<>(list);
+    public List<Rooms> getList(Rooms rooms) throws ErrorCodeException {
+        return roomsDao.getList(rooms);
+    }
+
+    @Override
+    public Rooms get(Long id) throws ErrorCodeException {
+        return roomsDao.get(id);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
-    public void update(Rooms rooms) {
+    public void insert(Rooms rooms) throws ErrorCodeException {
+        rooms.setCreateTime(new Date());
+        rooms.setUpdateTime(rooms.getCreateTime());
+        roomsDao.insert(rooms);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
+    public void update(Rooms rooms) throws ErrorCodeException {
         rooms.setUpdateTime(new Date());
         roomsDao.update(rooms);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
-    public void updateBatch(Rooms rooms, List<Long> ids) {
+    public void updateBatch(String weekDate, List<Long> ids) throws ErrorCodeException {
         if (!CollectionUtils.isEmpty(ids)) {
             ids.forEach((Long id) -> {
-                Rooms update = new Rooms();
-                BeanUtils.copyProperties(rooms, update);
-                update.setId(id);
-                roomsDao.update(update);
+                Rooms room = new Rooms();
+                room.setWeekDate(weekDate);
+                room.setId(id);
+                room.setUpdateTime(new Date());
+                roomsDao.update(room);
             });
         }
     }
 
-    @Override
-    public void insert(Rooms rooms) {
-        roomsDao.insert(rooms);
-    }
-
-    @Override
-    public Rooms get(Long id) {
-        return roomsDao.getRoomsById(id);
-    }
 }

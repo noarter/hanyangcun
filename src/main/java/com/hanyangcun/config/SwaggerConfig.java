@@ -2,29 +2,44 @@ package com.hanyangcun.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
+import springfox.documentation.service.Parameter;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @EnableSwagger2
-@EnableWebMvc
 public class SwaggerConfig {
     @Bean
     public Docket config() {
+        //可以添加多个header或参数
+        ParameterBuilder aParameterBuilder = new ParameterBuilder();
+        aParameterBuilder
+                .parameterType("header") //参数类型支持header, cookie, body, query etc
+                .name("access_token") //参数名
+                .defaultValue("登录之后获取的token值") //默认值
+                .description("登录之后获取的token值")
+                .modelRef(new ModelRef("string"))//指定参数值的类型
+                .required(false).build(); //非必需，这里是全局配置，然而在登陆的时候是不用验证的
+        List<Parameter> aParameters = new ArrayList<Parameter>();
+        aParameters.add(aParameterBuilder.build());
+
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .useDefaultResponseMessages(false)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.hanyangcun.controller"))
-                .build();
+                .build()
+                .globalOperationParameters(aParameters);
     }
 
     private ApiInfo apiInfo() {
@@ -37,17 +52,4 @@ public class SwaggerConfig {
                 .build();
     }
 
-    @Bean
-    public WebMvcConfigurer resourceHandlersConfig() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("swagger-ui.html")
-                        .addResourceLocations("classpath:/META-INF/resources/");
-
-                registry.addResourceHandler("/webjars/**")
-                        .addResourceLocations("classpath:/META-INF/resources/webjars/");
-            }
-        };
-    }
 }

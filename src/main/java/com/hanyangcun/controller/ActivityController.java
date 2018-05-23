@@ -1,5 +1,7 @@
 package com.hanyangcun.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.hanyangcun.constant.StatusCode;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Activity;
@@ -33,16 +35,18 @@ public class ActivityController {
             @ApiResponse(code = 500, message = "服务异常")
     })
     @PostMapping("/getPagedList")
-    public BaseResponse<List<Activity>> getPagedList(@RequestBody Activity activity, HttpServletRequest request) {
-        BaseResponse<List<Activity>> baseResponse = new BaseResponse<>();
+    public BaseResponse getPagedList(@RequestBody Activity activity, HttpServletRequest request) {
+        BaseResponse baseResponse = new BaseResponse();
         try {
             String token = HttpToken.getToken(request);
             if (StringUtils.isBlank(token))
                 throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
 
+            PageHelper.startPage(activity.getPageNum(), activity.getPageSize());
+
             List<Activity> activities = activityService.getList(activity);
 
-            baseResponse.setData(activities);
+            baseResponse.setData(new PageInfo<>(activities));
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
@@ -93,9 +97,13 @@ public class ActivityController {
             @ApiResponse(code = 500, message = "服务异常")
     })
     @PostMapping("/insert")
-    public BaseResponse insert(@RequestBody Activity activity) {
+    public BaseResponse insert(@RequestBody Activity activity,HttpServletRequest request) {
         BaseResponse baseResponse = new BaseResponse<>();
         try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
             activityService.insert(activity);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());

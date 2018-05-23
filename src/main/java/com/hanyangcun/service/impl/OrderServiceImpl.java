@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class OrderServiceImpl implements IOrderService {
 
@@ -30,12 +32,6 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public PageInfo<Order> getPagedList(Order order, Integer pageIndex, Integer pageSize) throws ErrorCodeException {
-        PageHelper.startPage(pageIndex, pageSize);
-        return new PageInfo<>(orderDao.getList(order));
-    }
-
-    @Override
     public Order getOrderDetailByOrderNo(String orderNO) throws ErrorCodeException {
         return orderDao.getOrderDetailByOrderNo(orderNO);
     }
@@ -43,5 +39,10 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public Order getOrderDetailById(Long id) throws ErrorCodeException {
         return orderDao.getOrderDetailById(id);
+    }
+
+    @Override
+    public List<Order> getList(Order order) throws ErrorCodeException {
+        return orderDao.getList(order);
     }
 }

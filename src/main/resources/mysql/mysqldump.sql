@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 5.7.22, for osx10.13 (x86_64)
 --
--- Host: 127.0.0.1    Database: village
+-- Host: 118.24.103.116    Database: village
 -- ------------------------------------------------------
--- Server version	5.7.22
+-- Server version	5.5.56
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `t_account` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_account_id_uindex` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='账户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,14 +56,14 @@ CREATE TABLE `t_activity` (
   `content` text NOT NULL COMMENT '活动内容',
   `start_time` datetime NOT NULL COMMENT '开始时间',
   `end_time` datetime NOT NULL COMMENT '结束时间',
-  `discount_price` float NOT NULL COMMENT '优惠券金额',
-  `use_count` int(11) NOT NULL COMMENT '使用数量',
-  `status` int(1) NOT NULL COMMENT '状态',
+  `discount_price` float NOT NULL DEFAULT '0' COMMENT '优惠券金额',
+  `use_count` int(11) NOT NULL DEFAULT '0' COMMENT '使用数量',
+  `status` int(1) NOT NULL DEFAULT '0' COMMENT '状态：0-上线1-下线',
   `create_time` datetime NOT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_activity_id_uindex` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='活动表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,36 @@ CREATE TABLE `t_activity` (
 
 LOCK TABLES `t_activity` WRITE;
 /*!40000 ALTER TABLE `t_activity` DISABLE KEYS */;
+INSERT INTO `t_activity` VALUES (1,'sss','sss','2018-05-16 10:45:43','2018-08-16 10:46:07',23,0,1,'2018-05-16 10:46:32','2018-05-16 10:46:36');
 /*!40000 ALTER TABLE `t_activity` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `t_coupon`
+--
+
+DROP TABLE IF EXISTS `t_coupon`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_coupon` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '优惠券名称',
+  `activity_id` bigint(20) NOT NULL COMMENT '活动id',
+  `coupon_no` bigint(20) NOT NULL COMMENT '优惠券码',
+  `create_time` date NOT NULL COMMENT '创建时间',
+  `update_time` date DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `t_coupon_id_uindex` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='优惠券';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `t_coupon`
+--
+
+LOCK TABLES `t_coupon` WRITE;
+/*!40000 ALTER TABLE `t_coupon` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t_coupon` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -86,10 +115,12 @@ CREATE TABLE `t_order` (
   `id` bigint(20) NOT NULL COMMENT '订单号',
   `order_no` varchar(64) NOT NULL COMMENT '订单编号',
   `order_type` int(1) NOT NULL COMMENT '订单类型',
-  `from_the_time` varchar(128) NOT NULL COMMENT '入离时间',
+  `in_time` date NOT NULL COMMENT '入离时间',
   `rooms_number` int(11) NOT NULL COMMENT '房间套数',
   `nights` int(11) NOT NULL COMMENT '入住晚数',
-  `people` int(11) NOT NULL COMMENT '人数',
+  `people` int(11) NOT NULL DEFAULT '0' COMMENT '人数',
+  `adult_people` int(11) NOT NULL DEFAULT '0' COMMENT '成人人数',
+  `child_people` int(11) NOT NULL DEFAULT '0' COMMENT '儿童人数',
   `link_name` varchar(64) NOT NULL COMMENT '联系人',
   `link_phone` int(11) NOT NULL COMMENT '联系人手机号',
   `guests` varchar(64) NOT NULL COMMENT '客人',
@@ -100,10 +131,11 @@ CREATE TABLE `t_order` (
   `order_status` int(1) NOT NULL COMMENT '订单状态',
   `order_time` datetime NOT NULL COMMENT '下单时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `out_time` date NOT NULL COMMENT '退房时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_order_id_uindex` (`id`),
   UNIQUE KEY `t_order_order_no_uindex` (`order_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,7 +144,35 @@ CREATE TABLE `t_order` (
 
 LOCK TABLES `t_order` WRITE;
 /*!40000 ALTER TABLE `t_order` DISABLE KEYS */;
+INSERT INTO `t_order` VALUES (1,'201805011010',1,'2018-05-22',1,1,1,0,0,'1',1,'张三',1552708911,1,500,1,3,'2018-05-19 10:54:17','2018-05-19 07:04:22','2018-05-22');
 /*!40000 ALTER TABLE `t_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `t_record`
+--
+
+DROP TABLE IF EXISTS `t_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_record` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `phone` int(11) NOT NULL COMMENT '手机号',
+  `coupon_no` bigint(20) NOT NULL COMMENT '优惠券码',
+  `create_time` date NOT NULL COMMENT '创建时间',
+  `update_time` date DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `t_record_id_uindex` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='领取记录表';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `t_record`
+--
+
+LOCK TABLES `t_record` WRITE;
+/*!40000 ALTER TABLE `t_record` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t_record` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -124,7 +184,7 @@ DROP TABLE IF EXISTS `t_rooms`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_rooms` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(1) NOT NULL COMMENT '房间类型',
+  `room_type` varchar(128) NOT NULL COMMENT '房间类型',
   `room_number` int(11) NOT NULL DEFAULT '0' COMMENT '房间总数',
   `used_room` int(11) NOT NULL DEFAULT '0' COMMENT '已定房间数量',
   `remained_room` int(11) NOT NULL COMMENT '剩余房间数量',
@@ -137,7 +197,7 @@ CREATE TABLE `t_rooms` (
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_rooms_id_uindex` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房间表';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='房间表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,6 +206,7 @@ CREATE TABLE `t_rooms` (
 
 LOCK TABLES `t_rooms` WRITE;
 /*!40000 ALTER TABLE `t_rooms` DISABLE KEYS */;
+INSERT INTO `t_rooms` VALUES (1,'11',99,2,2,0,0,2,'测试批量修改',2,'2017-07-18 19:00:00','2018-05-19 08:54:24'),(2,'1',221,2,2,0,0,2,'测试批量修改',2,'2017-07-18 19:00:00','2017-07-18 19:00:00'),(3,'1',2,2,2,2,2,2,'21212121',2,'2017-07-18 19:00:00','2017-07-18 19:00:00');
 /*!40000 ALTER TABLE `t_rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +228,7 @@ CREATE TABLE `t_user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_user_id_uindex` (`id`),
   UNIQUE KEY `t_user_username_uindex` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='用户表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -189,4 +250,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-14 22:41:53
+-- Dump completed on 2018-05-22 18:20:32

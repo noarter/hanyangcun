@@ -12,14 +12,14 @@ public interface IActivityDao {
             "insert into t_activity " +
             "<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\" >" +
             "id, name, content, start_time, end_time," +
-            "<if test=\"discountPrice != null and discountPrice != '' \"> discount_price,</if>" +
-            "<if test=\"useCount != null and useCount != '' \"> use_count,</if>" +
+            "<if test=\"discountPrice != null\"> discount_price,</if>" +
+            "<if test=\"useCount != null\"> use_count,</if>" +
             "status, create_time, update_time" +
             "</trim>" +
             "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >" +
             "#{id}, #{name}, #{content}, #{startTime}, #{endTime}," +
-            "<if test=\"discountPrice != null and discountPrice != '' \"> #{discountPrice},</if>" +
-            "<if test=\"useCount != null and useCount != '' \"> #{useCount},</if>" +
+            "<if test=\"discountPrice != null\"> #{discountPrice},</if>" +
+            "<if test=\"useCount != null\"> #{useCount},</if>" +
             " #{status}, #{createTime}, #{updateTime}" +
             "</trim>" +
             "</script>")
@@ -45,8 +45,8 @@ public interface IActivityDao {
             "<if test=\"activityStatus == 3 \"> and now() &gt; end_time</if>" +
             "<if test=\"username != null and username != '' \"> and username = #{username}</if>" +
             "<if test=\"content != null and content != '' \"> and content = #{content}</if>" +
-            "<if test=\"startTime != null and startTime != '' \"> and start_time &gt; #{startTime}</if>" +
-            "<if test=\"endTime != null and endTime != '' \"> and end_time &lt; #{endTime}</if>" +
+            "<if test=\"activityStartTime != null and activityStartTime != '' \"> and start_time &gt; #{activityStartTime}</if>" +
+            "<if test=\"activityEndTime != null and activityEndTime != '' \"> and end_time &lt; #{activityEndTime}</if>" +
             "</where>" +
             "</script>")
     @Results({
@@ -62,8 +62,8 @@ public interface IActivityDao {
     @Update("<script>" +
             "update t_activity " +
             "<set>" +
-            "<if test=\"name != null\">name=#{name},</if>" +
-            "<if test=\"content != null\">content=#{content},</if>" +
+            "<if test=\"name != null and name != ''\">name=#{name},</if>" +
+            "<if test=\"content != null and content != ''\">content=#{content},</if>" +
             "<if test=\"startTime != null\">start_time=#{startTime},</if>" +
             "<if test=\"endTime != null\">end_time=#{endTime},</if>" +
             "<if test=\"discountPrice != null\">discount_price=#{discountPrice},</if>" +

@@ -23,7 +23,7 @@ public interface IUserDao {
     @Update("<script>" +
             "update t_user " +
             "<set>" +
-            "<if test=\"password != null\">password=#{password},</if>" +
+            "<if test=\"password != null and password != ''\">password=#{password},</if>" +
             "<if test=\"locked != null\">locked=#{locked},</if>" +
             "<if test=\"updateTime != null\">update_time=#{updateTime}</if>" +
             "</set>" +
@@ -34,7 +34,7 @@ public interface IUserDao {
     @Select("<script>" +
             "select id,username,password,salt,locked,create_time,update_time from t_user " +
             "<where>" +
-            "<if test=\"id != null and id != '' \"> and id = #{id}</if>" +
+            "<if test=\"id != null\"> and id = #{id}</if>" +
             "<if test=\"username != null and username != '' \"> and username = #{username}</if>" +
             "</where>" +
             "</script>")

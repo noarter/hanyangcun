@@ -21,11 +21,12 @@ public class SysConstants {
     public static final int STATUS_OFFLINE = 1;
 
     /**
-     * 订单状态 0-待支付 1-已支付 2-已取消
+     * 订单状态 0-待支付 1-已支付 2-已取消 3-已退款
      */
     public static final int ORDER_PAY = 0;
     public static final int ORDER_COMPLETE = 1;
     public static final int ORDER_CANCEL = 2;
+    public static final int ORDER_REFUND = 3;
 
     /**
      * 活动状态：1-未开始2-已开始3-已结束

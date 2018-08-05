@@ -10,6 +10,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +69,14 @@ public class SmsTemplateController {
 
             if (StringUtils.isBlank(smsTemplate.getName()) || StringUtils.isBlank(smsTemplate.getCode()))
                 throw new ErrorCodeException(StatusCode.ILLEGAL_ARGUMENT.getCode(), StatusCode.ILLEGAL_ARGUMENT.getMsg());
+
+            SmsTemplate sms = new SmsTemplate();
+            sms.setName(smsTemplate.getName());
+            List<SmsTemplate> smsTemplates = smsTemplateService.getList(sms);
+
+            if (!CollectionUtils.isEmpty(smsTemplates))
+                throw new ErrorCodeException(StatusCode.DATA_IS_EXIST.getCode(), StatusCode.DATA_IS_EXIST.getMsg());
+
             smsTemplateService.insert(smsTemplate);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());

@@ -42,6 +42,11 @@ public enum StatusCode {
     IN_TIME_OUTRANGE(1005, "入住时间前二天内，无法取消订单"),
 
     /**
+     * 数据已存在
+     */
+    DATA_IS_EXIST(1006,"数据已经存在"),
+
+    /**
      *
      */
     SEND_COUPON_NO_EXCEPTION(2000,"批量发送优惠券异常"),

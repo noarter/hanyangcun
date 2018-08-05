@@ -20,6 +20,9 @@ public class PayRecord {
     @ApiModelProperty(value = "支付类型：支付类型：1-电脑网站支付(支付宝)2-手机网页支付(支付宝)3-扫码支付(微信)4-公众号支付(微信)5-H5支付(微信)")
     private Integer type;
 
+    @ApiModelProperty(value = "支付单号")
+    private String payNo;
+
     @ApiModelProperty(value = "交易流水号")
     private String tradeNo;
 

@@ -39,7 +39,14 @@ public enum StatusCode {
     /**
      * 超过入住时间
      */
-    IN_TIME_OUTRANGE(1005, "入住时间前二天内，无法取消订单");
+    IN_TIME_OUTRANGE(1005, "入住时间前二天内，无法取消订单"),
+
+    /**
+     *
+     */
+    SEND_COUPON_NO_EXCEPTION(2000,"批量发送优惠券异常"),
+    ;
+
     /**
      * 枚举值
      */

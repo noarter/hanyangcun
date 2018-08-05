@@ -27,4 +27,11 @@ public class SysConstants {
     public static final int ORDER_COMPLETE = 1;
     public static final int ORDER_CANCEL = 2;
 
+    /**
+     * 活动状态：1-未开始2-已开始3-已结束
+     */
+    public static final int ACTIVITY_START = 1;
+    public static final int ACTIVITY_STARTING = 2;
+    public static final int ACTIVITY_END = 3;
+
 }

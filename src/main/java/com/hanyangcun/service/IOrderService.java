@@ -15,4 +15,6 @@ public interface IOrderService {
     Order getOrderDetailById(Long id) throws ErrorCodeException;
 
     List<Order> getList(Order order) throws ErrorCodeException;
+
+    List<Order> getOrderListByPhone(String phone) throws ErrorCodeException;
 }

@@ -33,7 +33,7 @@ public class RoomsServiceImpl implements IRoomsService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public void insert(Rooms rooms) throws ErrorCodeException {
-        rooms.setCreateTime(new Date());
+        rooms.setCreateTime(System.currentTimeMillis());
         rooms.setUpdateTime(rooms.getCreateTime());
         roomsDao.insert(rooms);
     }
@@ -41,7 +41,7 @@ public class RoomsServiceImpl implements IRoomsService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     public void update(Rooms rooms) throws ErrorCodeException {
-        rooms.setUpdateTime(new Date());
+        rooms.setUpdateTime(System.currentTimeMillis());
         roomsDao.update(rooms);
     }
 
@@ -53,7 +53,7 @@ public class RoomsServiceImpl implements IRoomsService {
                 Rooms room = new Rooms();
                 room.setWeekDate(weekDate);
                 room.setId(id);
-                room.setUpdateTime(new Date());
+                room.setUpdateTime(System.currentTimeMillis());
                 roomsDao.update(room);
             });
         }

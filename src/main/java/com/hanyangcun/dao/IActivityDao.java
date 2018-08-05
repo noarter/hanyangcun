@@ -11,13 +11,13 @@ public interface IActivityDao {
     @Insert("<script>" +
             "insert into t_activity " +
             "<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\" >" +
-            "id, name, content, start_time, end_time," +
+            "id, name, template_code, content, start_time, end_time," +
             "<if test=\"discountPrice != null\"> discount_price,</if>" +
             "<if test=\"useCount != null\"> use_count,</if>" +
             "status, create_time, update_time" +
             "</trim>" +
             "<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\" >" +
-            "#{id}, #{name}, #{content}, #{startTime}, #{endTime}," +
+            "#{id}, #{name}, #{templateCode}, #{content}, #{startTime}, #{endTime}," +
             "<if test=\"discountPrice != null\"> #{discountPrice},</if>" +
             "<if test=\"useCount != null\"> #{useCount},</if>" +
             " #{status}, #{createTime}, #{updateTime}" +
@@ -28,6 +28,7 @@ public interface IActivityDao {
 
     @Select("select * from t_activity where id = #{id}")
     @Results({
+            @Result(column = "template_code", property = "templateCode"),
             @Result(column = "start_time", property = "startTime"),
             @Result(column = "end_time", property = "endTime"),
             @Result(column = "discount_price", property = "discountPrice"),
@@ -35,21 +36,22 @@ public interface IActivityDao {
             @Result(column = "create_time", property = "createTime"),
             @Result(column = "update_time", property = "updateTime")
     })
-    Activity getById(@Param("id") Long id);
+    Activity get(@Param("id") Long id);
 
     @Select("<script>" +
-            "select *,if(now() &lt; start_time,1,if(now() &gt; end_time,3,2)) as activityStatus from t_activity " +
+            "select *,if(unix_timestamp()*1000 &lt; start_time,1,if(unix_timestamp()*1000 &gt; end_time,3,2)) as activityStatus from t_activity " +
             "<where>" +
             "<if test=\"activityStatus == 1 \"> and now() &lt; start_time</if>" +
             "<if test=\"activityStatus == 2 \"> and now() &gt; start_time and now() &lt; end_time</if>" +
             "<if test=\"activityStatus == 3 \"> and now() &gt; end_time</if>" +
-            "<if test=\"username != null and username != '' \"> and username = #{username}</if>" +
+            "<if test=\"name != null and name != '' \"> and name = #{name}</if>" +
             "<if test=\"content != null and content != '' \"> and content = #{content}</if>" +
-            "<if test=\"activityStartTime != null and activityStartTime != '' \"> and start_time &gt; #{activityStartTime}</if>" +
-            "<if test=\"activityEndTime != null and activityEndTime != '' \"> and end_time &lt; #{activityEndTime}</if>" +
+            "<if test=\"startTime != null \"> and start_time &gt; #{startTime}</if>" +
+            "<if test=\"endTime != null \"> and end_time &lt; #{endTime}</if>" +
             "</where>" +
             "</script>")
     @Results({
+            @Result(column = "template_code", property = "templateCode"),
             @Result(column = "start_time", property = "startTime"),
             @Result(column = "end_time", property = "endTime"),
             @Result(column = "discount_price", property = "discountPrice"),
@@ -63,6 +65,7 @@ public interface IActivityDao {
             "update t_activity " +
             "<set>" +
             "<if test=\"name != null and name != ''\">name=#{name},</if>" +
+            "<if test=\"templateCode != null and templateCode != ''\">template_code=#{templateCode},</if>" +
             "<if test=\"content != null and content != ''\">content=#{content},</if>" +
             "<if test=\"startTime != null\">start_time=#{startTime},</if>" +
             "<if test=\"endTime != null\">end_time=#{endTime},</if>" +

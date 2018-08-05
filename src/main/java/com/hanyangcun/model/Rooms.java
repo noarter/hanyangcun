@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -44,8 +42,8 @@ public class Rooms extends PageEntity {
     private Integer status;
 
     @ApiModelProperty(value = "创建时间", access = "hidden")
-    private Date createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "修改时间", access = "hidden")
-    private Date updateTime;
+    private Long updateTime;
 }

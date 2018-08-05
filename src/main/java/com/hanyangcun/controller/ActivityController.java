@@ -3,6 +3,7 @@ package com.hanyangcun.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanyangcun.constant.StatusCode;
+import com.hanyangcun.constant.SysConstants;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Activity;
 import com.hanyangcun.response.BaseResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+@Api(description = "活动相关接口")
 @RequestMapping("/activity")
 @Slf4j
 @RestController
@@ -25,7 +27,7 @@ public class ActivityController {
     @Autowired
     private IActivityService activityService;
 
-    @ApiOperation(value = "获取活动列表信息", notes = "")
+    @ApiOperation(value = "分页获取活动列表信息", notes = "")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
     })
@@ -47,6 +49,37 @@ public class ActivityController {
             List<Activity> activities = activityService.getList(activity);
 
             baseResponse.setData(new PageInfo<>(activities));
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("分页获取活动列表失败：{}", e.getMsg(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "获取活动列表信息", notes = "")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @GetMapping("/getList")
+    public BaseResponse getList(HttpServletRequest request) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            String token = HttpToken.getToken(request);
+            if (StringUtils.isBlank(token))
+                throw new ErrorCodeException(StatusCode.TOKEN_VALID.getCode(), StatusCode.TOKEN_VALID.getMsg());
+
+            Activity activity = new Activity();
+            activity.setActivityStatus(SysConstants.ACTIVITY_STARTING);
+
+            List<Activity> activities = activityService.getList(activity);
+
+            baseResponse.setData(activities);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());

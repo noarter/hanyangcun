@@ -132,7 +132,7 @@
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
-            <version>4.0.1</version>
+            <version>3.7.1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.aliyun/aliyun-java-sdk-dysmsapi -->
         <dependency>
@@ -190,14 +190,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <dependencies>
-                    <!-- https://mvnrepository.com/artifact/org.springframework/springloaded -->
+                <!--<dependencies>
+                    &lt;!&ndash; 热部署插件 &ndash;&gt;
+                    &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework/springloaded &ndash;&gt;
                     <dependency>
                         <groupId>org.springframework</groupId>
                         <artifactId>springloaded</artifactId>
                         <version>1.2.8.RELEASE</version>
                     </dependency>
-                </dependencies>
+                </dependencies>-->
             </plugin>
         </plugins>
     </build>

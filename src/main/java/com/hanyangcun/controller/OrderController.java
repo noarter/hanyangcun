@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-@Api(description = "订单接口")
+@Api(description = "订单相关接口")
 @RequestMapping("/order")
 @Slf4j
 @RestController
@@ -38,7 +37,7 @@ public class OrderController {
             @ApiResponse(code = 401, message = "TOKEN失效"),
             @ApiResponse(code = 500, message = "服务异常")
     })
-    @GetMapping("/getPagedList")
+    @PostMapping("/getPagedList")
     public BaseResponse getPagedList(@RequestBody Order order, HttpServletRequest request) {
         BaseResponse baseResponse = new BaseResponse();
         try {
@@ -54,6 +53,47 @@ public class OrderController {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
             log.error("获取订单列表信息失败：{}", e.getMsg(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "获取订单信息", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @GetMapping("/getOrderDetail/{orderNo}")
+    public BaseResponse getOrderDetail(@PathVariable("orderNo") String orderNo) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            Order order = orderService.getOrderDetailByOrderNo(orderNo);
+            baseResponse.setData(order);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("获取订单信息失败：{}", e.getMsg(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "保存订单", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 1001,message = "参数不正确"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @PostMapping("/saveOrder")
+    public BaseResponse saveOrder(@RequestBody Order order) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            if (order.getInTime() == null || order.getOutTime() == null || order.getOrderType() == null
+                    || StringUtils.isBlank(order.getGuests()) || StringUtils.isBlank(order.getGuestsPhone()) || order.getGuestsSex() == null)
+                throw new ErrorCodeException(StatusCode.ILLEGAL_ARGUMENT.getCode(), StatusCode.ILLEGAL_ARGUMENT.getMsg());
+            orderService.insert(order);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("保存订单列表信息失败：{}", e.getMsg(), e);
         }
         return baseResponse;
     }
@@ -85,12 +125,12 @@ public class OrderController {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, 2);
 
-            if (!cancelOrder.getInTime().after(calendar.getTime()))
+            if (cancelOrder.getInTime() < calendar.getTimeInMillis())
                 throw new ErrorCodeException(StatusCode.IN_TIME_OUTRANGE.getCode(), StatusCode.IN_TIME_OUTRANGE.getMsg());
 
             if (SysConstants.ORDER_COMPLETE == cancelOrder.getOrderStatus()) {
                 cancelOrder.setOrderStatus(SysConstants.ORDER_CANCEL);
-                cancelOrder.setUpdateTime(new Date());
+                cancelOrder.setUpdateTime(System.currentTimeMillis());
                 orderService.update(cancelOrder);
             }
         } catch (ErrorCodeException e) {

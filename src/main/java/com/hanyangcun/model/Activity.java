@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,14 +18,17 @@ public class Activity extends PageEntity {
     @ApiModelProperty(value = "活动主题")
     private String name;
 
-    @ApiModelProperty(value = "活动内容")
+    @ApiModelProperty(value = "短信模板code")
+    private String templateCode;
+
+    @ApiModelProperty(value = "活动内容", access = "hidden")
     private String content;
 
     @ApiModelProperty(value = "活动开始时间")
-    private Date startTime;
+    private Long startTime;
 
     @ApiModelProperty(value = "活动结束时间")
-    private Date endTime;
+    private Long endTime;
 
     @ApiModelProperty(value = "优惠券价格")
     private float discountPrice;
@@ -39,17 +40,12 @@ public class Activity extends PageEntity {
     private Integer status;
 
     @ApiModelProperty(value = "创建时间", access = "hidden")
-    private Date createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "更新时间", access = "hidden")
-    private Date updateTime;
+    private Long updateTime;
 
     @ApiModelProperty(value = "活动状态：1-未开始2-已开始3-已结束")
     private Integer activityStatus;
 
-    @ApiModelProperty(value = "查询活动开始时间")
-    private String activityStartTime;
-
-    @ApiModelProperty(value = "查询活动结束时间")
-    private String activityEndTime;
 }

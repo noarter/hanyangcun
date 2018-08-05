@@ -69,6 +69,16 @@ public class UserController {
         return baseResponse;
     }
 
+    @ApiOperation(value = "退出", notes = "")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
+    @GetMapping("/logout")
+    public BaseResponse<Map> logout() {
+        return new BaseResponse<>();
+    }
+
     @ApiOperation(value = "刷新token", notes = "")
     @ApiImplicitParams(value = {
             @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")

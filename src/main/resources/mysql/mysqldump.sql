@@ -27,8 +27,8 @@ CREATE TABLE `t_account` (
   `name` varchar(128) NOT NULL COMMENT '姓名',
   `phone` int(11) NOT NULL COMMENT '手机号',
   `sex` int(1) NOT NULL COMMENT '性别：0-男1-女',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_account_id_uindex` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='账户表';
@@ -53,14 +53,14 @@ DROP TABLE IF EXISTS `t_activity`;
 CREATE TABLE `t_activity` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) NOT NULL COMMENT '活动名称',
-  `content` text NOT NULL COMMENT '活动内容',
-  `start_time` datetime NOT NULL COMMENT '开始时间',
-  `end_time` datetime NOT NULL COMMENT '结束时间',
+  `content` text COMMENT '活动内容',
+  `start_time` bigint(20) NOT NULL COMMENT '开始时间',
+  `end_time` bigint(20) NOT NULL COMMENT '结束时间',
   `discount_price` float NOT NULL DEFAULT '0' COMMENT '优惠券金额',
   `use_count` int(11) NOT NULL DEFAULT '0' COMMENT '使用数量',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '状态：0-上线1-下线',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_activity_id_uindex` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='活动表';
@@ -72,36 +72,7 @@ CREATE TABLE `t_activity` (
 
 LOCK TABLES `t_activity` WRITE;
 /*!40000 ALTER TABLE `t_activity` DISABLE KEYS */;
-INSERT INTO `t_activity` VALUES (1,'sss','sss','2018-05-16 10:45:43','2018-08-16 10:46:07',23,0,1,'2018-05-16 10:46:32','2018-05-16 10:46:36');
 /*!40000 ALTER TABLE `t_activity` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `t_coupon`
---
-
-DROP TABLE IF EXISTS `t_coupon`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `t_coupon` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) COLLATE utf8_bin NOT NULL COMMENT '优惠券名称',
-  `activity_id` bigint(20) NOT NULL COMMENT '活动id',
-  `coupon_no` bigint(20) NOT NULL COMMENT '优惠券码',
-  `create_time` date NOT NULL COMMENT '创建时间',
-  `update_time` date DEFAULT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `t_coupon_id_uindex` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='优惠券';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `t_coupon`
---
-
-LOCK TABLES `t_coupon` WRITE;
-/*!40000 ALTER TABLE `t_coupon` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t_coupon` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -115,7 +86,8 @@ CREATE TABLE `t_order` (
   `id` bigint(20) NOT NULL COMMENT '订单号',
   `order_no` varchar(64) NOT NULL COMMENT '订单编号',
   `order_type` int(1) NOT NULL COMMENT '订单类型',
-  `in_time` date NOT NULL COMMENT '入离时间',
+  `in_time` bigint(20) NOT NULL COMMENT '入住时间',
+  `out_time` bigint(20) NOT NULL COMMENT '离开时间',
   `rooms_number` int(11) NOT NULL COMMENT '房间套数',
   `nights` int(11) NOT NULL COMMENT '入住晚数',
   `people` int(11) NOT NULL DEFAULT '0' COMMENT '人数',
@@ -129,9 +101,8 @@ CREATE TABLE `t_order` (
   `discount_price` float NOT NULL DEFAULT '0' COMMENT '优惠价格',
   `actual_amount` float NOT NULL DEFAULT '0' COMMENT '实付金额',
   `order_status` int(1) NOT NULL COMMENT '订单状态',
-  `order_time` datetime NOT NULL COMMENT '下单时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
-  `out_time` date NOT NULL COMMENT '退房时间',
+  `order_time` bigint(20) NOT NULL COMMENT '下单时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_order_id_uindex` (`id`),
   UNIQUE KEY `t_order_order_no_uindex` (`order_no`)
@@ -144,8 +115,35 @@ CREATE TABLE `t_order` (
 
 LOCK TABLES `t_order` WRITE;
 /*!40000 ALTER TABLE `t_order` DISABLE KEYS */;
-INSERT INTO `t_order` VALUES (1,'201805011010',1,'2018-05-22',1,1,1,0,0,'1',1,'张三',1552708911,1,500,1,3,'2018-05-19 10:54:17','2018-05-19 07:04:22','2018-05-22');
 /*!40000 ALTER TABLE `t_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `t_order_items`
+--
+
+DROP TABLE IF EXISTS `t_order_items`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `t_order_items` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(20) NOT NULL COMMENT '订单表主键id',
+  `rooms_id` bigint(20) NOT NULL COMMENT '房屋id',
+  `rooms_price` float NOT NULL DEFAULT '0' COMMENT '房屋单价',
+  `pre_rooms` int(11) NOT NULL DEFAULT '1' COMMENT '预定房间数',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `t_order_items`
+--
+
+LOCK TABLES `t_order_items` WRITE;
+/*!40000 ALTER TABLE `t_order_items` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t_order_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -157,10 +155,11 @@ DROP TABLE IF EXISTS `t_record`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `t_record` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `activity_id` bigint(20) NOT NULL COMMENT '活动id',
   `phone` int(11) NOT NULL COMMENT '手机号',
   `coupon_no` bigint(20) NOT NULL COMMENT '优惠券码',
-  `create_time` date NOT NULL COMMENT '创建时间',
-  `update_time` date DEFAULT NULL COMMENT '更新时间',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_record_id_uindex` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='领取记录表';
@@ -193,8 +192,8 @@ CREATE TABLE `t_rooms` (
   `discount_rate` int(11) NOT NULL DEFAULT '0' COMMENT '折扣比率',
   `week_date` varchar(64) DEFAULT NULL COMMENT '周期',
   `status` int(1) NOT NULL COMMENT '状态',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_rooms_id_uindex` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='房间表';
@@ -206,7 +205,6 @@ CREATE TABLE `t_rooms` (
 
 LOCK TABLES `t_rooms` WRITE;
 /*!40000 ALTER TABLE `t_rooms` DISABLE KEYS */;
-INSERT INTO `t_rooms` VALUES (1,'11',99,2,2,0,0,2,'测试批量修改',2,'2017-07-18 19:00:00','2018-05-19 08:54:24'),(2,'1',221,2,2,0,0,2,'测试批量修改',2,'2017-07-18 19:00:00','2017-07-18 19:00:00'),(3,'1',2,2,2,2,2,2,'21212121',2,'2017-07-18 19:00:00','2017-07-18 19:00:00');
 /*!40000 ALTER TABLE `t_rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,8 +221,8 @@ CREATE TABLE `t_user` (
   `password` varchar(128) NOT NULL COMMENT '密码',
   `salt` varchar(128) NOT NULL COMMENT '盐值',
   `locked` int(1) NOT NULL DEFAULT '0' COMMENT '0-正常1-禁用',
-  `create_time` datetime NOT NULL COMMENT '创建时间',
-  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `create_time` bigint(20) NOT NULL COMMENT '创建时间',
+  `update_time` bigint(20) DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `t_user_id_uindex` (`id`),
   UNIQUE KEY `t_user_username_uindex` (`username`)
@@ -237,7 +235,7 @@ CREATE TABLE `t_user` (
 
 LOCK TABLES `t_user` WRITE;
 /*!40000 ALTER TABLE `t_user` DISABLE KEYS */;
-INSERT INTO `t_user` VALUES (1,'admin','fbab6955560ff043f0f011523248e352b9bd51a27c7f9e754619905dd8d48abe7ba67dc49931867fb09cd677ade5bb3ee6a3fbe753cd89a14b4ab90e705b4ab4','ADDA1D39DAAD44F497551D64D494F8EB',0,'2018-05-07 16:05:20','2018-05-07 16:05:23');
+INSERT INTO `t_user` VALUES (1,'admin','fbab6955560ff043f0f011523248e352b9bd51a27c7f9e754619905dd8d48abe7ba67dc49931867fb09cd677ade5bb3ee6a3fbe753cd89a14b4ab90e705b4ab4','ADDA1D39DAAD44F497551D64D494F8EB',0,1527674400000,1527674400000);
 /*!40000 ALTER TABLE `t_user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -250,4 +248,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-22 18:20:32
+-- Dump completed on 2018-06-10 16:16:15

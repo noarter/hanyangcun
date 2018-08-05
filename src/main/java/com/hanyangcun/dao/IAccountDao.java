@@ -7,31 +7,28 @@ import java.util.List;
 
 @Mapper
 public interface IAccountDao {
-    @Insert("insert into t_account (id, name, phone, sex, create_time, update_time) " +
-            "values (#{id}, #{name}, #{phone}, #{sex}, #{createTime}, #{updateTime})")
+    @Insert("insert into t_account (name, phone, sex, create_time, update_time) " +
+            "values (#{name}, #{phone}, #{sex}, #{createTime}, #{updateTime}) ON DUPLICATE KEY UPDATE name = values(name), sex = values(sex)")
     @Options(useGeneratedKeys=true, keyProperty="id")
     void insert(Account account);
 
     @Insert("<script>"  +
-            "insert into t_account (id, name, phone, sex, create_time, update_time) VALUES" +
+            "insert into t_account (name, phone, sex, create_time, update_time) VALUES" +
             "<foreach collection=\"list\" item=\"item\" index=\"index\"  open=\"(\" separator=\",\" close=\")\">" +
-            "#{item.id}, #{item.name}, #{item.phone}, #{item.sex}, #{item.createTime}, #{item.updateTime}" +
+            "#{item.name}, #{item.phone}, #{item.sex}, #{item.createTime}, #{item.updateTime}" +
             "</foreach>" +
+            " ON DUPLICATE KEY UPDATE name = values(name), sex = values(sex)" +
             "</script>")
     void insertBatch(@Param("list") List<Account> accounts);
-
-    @Delete("delete from t_account where id = #{id}")
-    void delete(@Param("id") Long id);
 
     @Update("<script>" +
             "update t_account " +
             "<set>" +
             "<if test=\"name != null and name != ''\">name=#{name},</if>" +
-            "<if test=\"phone != null\">phone=#{phone},</if>" +
-            "<if test=\"sex != null\">sex=#{sex}</if>" +
-            "<if test=\"updateTime != null\">update_time=#{updateTime}</if>" +
+            "<if test=\"sex != null\">sex=#{sex},</if>" +
+            "<if test=\"updateTime != null\">update_time=#{updateTime},</if>" +
             "</set>" +
-            " where id=#{id}" +
+            " where phone=#{phone}" +
             "</script>")
     void update(Account account);
 
@@ -42,12 +39,12 @@ public interface IAccountDao {
     })
     Account getByPhone(@Param("phone") Integer phone);
 
-    @Select("select * from t_account where id = #{id}")
+    @Select("select * from t_account where phone = #{phone}")
     @Results({
             @Result(column = "create_time", property = "createTime"),
             @Result(column = "update_time", property = "updateTime")
     })
-    Account getById(@Param("id") Long id);
+    Account get(@Param("phone") String phone);
 
     @Select("<script>" +
             "select * from t_account " +
@@ -62,4 +59,17 @@ public interface IAccountDao {
             @Result(column = "update_time", property = "updateTime")
     })
     List<Account> getList(Account account);
+
+
+    @Select("<script>"  +
+            "select * from t_account where phone in" +
+            "<foreach collection=\"array\" item=\"item\" index=\"index\"  open=\"(\" separator=\",\" close=\")\">" +
+            "#{item}" +
+            "</foreach>" +
+            "</script>")
+    @Results({
+            @Result(column = "create_time", property = "createTime"),
+            @Result(column = "update_time", property = "updateTime")
+    })
+    List<Account> batchExport(@Param("phones") String[] phones);
 }

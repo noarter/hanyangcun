@@ -29,7 +29,7 @@ public class ActivityServiceImpl implements IActivityService {
     @Override
     public void insert(Activity activity) throws ErrorCodeException {
         activity.setStatus(SysConstants.STATUS_ONLINE);
-        activity.setCreateTime(new Date());
+        activity.setCreateTime(System.currentTimeMillis());
         activity.setUpdateTime(activity.getCreateTime());
         activityDao.insert(activity);
     }
@@ -56,8 +56,8 @@ public class ActivityServiceImpl implements IActivityService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false, rollbackFor = Exception.class)
     @Override
     public void copy(Long id) throws ErrorCodeException {
-        Activity activity = activityDao.getById(id);
-        activity.setCreateTime(new Date());
+        Activity activity = activityDao.get(id);
+        activity.setCreateTime(System.currentTimeMillis());
         activity.setUpdateTime(activity.getCreateTime());
         activityDao.insert(activity);
     }
@@ -95,6 +95,6 @@ public class ActivityServiceImpl implements IActivityService {
      */
     @Override
     public Activity getById(Long id) throws ErrorCodeException {
-        return activityDao.getById(id);
+        return activityDao.get(id);
     }
 }

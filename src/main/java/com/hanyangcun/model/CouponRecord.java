@@ -2,26 +2,30 @@ package com.hanyangcun.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
-@ApiModel(value = "Coupon", description = "优惠券对象")
-public class Coupon extends PageEntity {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ApiModel(value = "CouponRecord", description = "记录对象")
+public class CouponRecord extends PageEntity {
     @ApiModelProperty(value = "id")
     private Long id;
-
-    @ApiModelProperty(value = "优惠券名称")
-    private String name;
 
     @ApiModelProperty(value = "活动id")
     private Long activityId;
 
+    @ApiModelProperty(value = "手机号")
+    private String phone;
+
     @ApiModelProperty(value = "优惠券码")
-    private Long couponNo;
+    private String couponNo;
 
     @ApiModelProperty(value = "创建时间", access = "hidden")
-    private Date createTime;
+    private Long createTime;
 
     @ApiModelProperty(value = "更新时间", access = "hidden")
-    private Date updateTime;
+    private Long updateTime;
 }

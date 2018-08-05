@@ -3,6 +3,7 @@ package com.hanyangcun.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hanyangcun.constant.StatusCode;
+import com.hanyangcun.constant.SysConstants;
 import com.hanyangcun.exception.ErrorCodeException;
 import com.hanyangcun.model.Rooms;
 import com.hanyangcun.response.BaseResponse;
@@ -36,6 +37,31 @@ public class RoomsController {
             @ApiResponse(code = 401, message = "TOKEN失效"),
             @ApiResponse(code = 500, message = "服务异常")
     })
+    @GetMapping("/getList")
+    public BaseResponse getList() {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            Rooms rooms = new Rooms();
+            rooms.setStatus(SysConstants.STATUS_ONLINE);
+            List<Rooms> roomsList = roomsService.getList(rooms);
+            baseResponse.setData(roomsList);
+        } catch (ErrorCodeException e) {
+            baseResponse.setCode(e.getCode());
+            baseResponse.setMsg(e.getMsg());
+            log.error("获取客房列表信息失败：{}", e.getMsg(), e);
+        }
+        return baseResponse;
+    }
+
+    @ApiOperation(value = "分页获取客房列表", notes = "", produces = "application/json")
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "access_token", dataType = "String", required = true, value = "token", defaultValue = "")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "操作成功"),
+            @ApiResponse(code = 401, message = "TOKEN失效"),
+            @ApiResponse(code = 500, message = "服务异常")
+    })
     @PostMapping("/getPagedList")
     public BaseResponse getPagedList(@RequestBody Rooms rooms, HttpServletRequest request) {
         BaseResponse baseResponse = new BaseResponse();
@@ -52,7 +78,7 @@ public class RoomsController {
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());
-            log.error("获取客房列表信息失败：{}", e.getMsg(), e);
+            log.error("分页获取客房列表信息失败：{}", e.getMsg(), e);
         }
         return baseResponse;
     }

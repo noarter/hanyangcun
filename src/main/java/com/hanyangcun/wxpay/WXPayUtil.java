@@ -1,5 +1,6 @@
 package com.hanyangcun.wxpay;
 
+import com.hanyangcun.util.StringUtils;
 import com.hanyangcun.wxpay.WXPayConstants.SignType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class WXPayUtil {
         org.w3c.dom.Element root = document.createElement("xml");
         document.appendChild(root);
         for (String key: data.keySet()) {
-            String value = data.get(key);
+            String value = String.valueOf(data.get(key));
             if (value == null) {
                 value = "";
             }
@@ -182,7 +183,10 @@ public class WXPayUtil {
      * @return 签名
      */
     public static String generateSignature(final Map<String, String> data, String key) throws Exception {
-        return generateSignature(data, key, SignType.MD5);
+        if(data.get("sign_type").equals("MD5")){
+            return generateSignature(data, key, SignType.MD5);
+        }
+        return generateSignature(data, key, SignType.HMACSHA256);
     }
 
     /**
@@ -202,8 +206,8 @@ public class WXPayUtil {
             if (k.equals(WXPayConstants.FIELD_SIGN)) {
                 continue;
             }
-            if (data.get(k).trim().length() > 0) // 参数值为空，则不参与签名
-                sb.append(k).append("=").append(data.get(k).trim()).append("&");
+            if (data.get(k) != null && StringUtils.isNotNullNorEmptyAfterTrim(String.valueOf(data.get(k)))) // 参数值为空，则不参与签名
+                sb.append(k).append("=").append(String.valueOf(data.get(k)).trim()).append("&");
         }
         sb.append("key=").append(key);
         if (SignType.MD5.equals(signType)) {

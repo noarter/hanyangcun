@@ -46,4 +46,8 @@ public class AlipayConfig {
     @Value("${ali.pay.gatewayUrl}")
     private String gatewayUrl;
 
+    // 授权访问令牌的授权类型
+    @Value("${ali.pay.grant_type}")
+    private String grant_type;
+
 }

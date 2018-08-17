@@ -25,9 +25,12 @@ public interface IOrderDao {
             "<if test=\"orderStatus != null\">order_status=#{orderStatus},</if>" +
             "<if test=\"updateTime != null\">update_time=#{updateTime}</if>" +
             "</set>" +
-            " where id=#{id} or order_no=#{orderNo}" +
+            "<where>" +
+            "<if test=\"id != null\"> and id=#{id}</if>" +
+            "<if test=\"orderNo !=null\"> and order_no=#{orderNo}</if>"+
+            "</where>" +
             "</script>")
-    void update(Order order);
+    int update(Order order);
 
     @Select("select * from t_order where id = #{id}")
     @Results({
@@ -54,7 +57,7 @@ public interface IOrderDao {
             "select * from t_order " +
             "<where>" +
             "<if test=\"orderNo != null and orderNo != ''\"> and order_no like concat('%',#{orderNo},'%')</if>" +
-            "<if test=\"linkPhone != null\"> and link_phone = #{linkPhone}</if>" +
+//            "<if test=\"linkPhone != null\"> and link_phone = #{linkPhone}</if>" +
             "</where>" +
             "</script>")
     @Results({

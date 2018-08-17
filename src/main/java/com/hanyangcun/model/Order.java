@@ -17,7 +17,7 @@ public class Order extends PageEntity {
     @ApiModelProperty(value = "订单编号")
     private String orderNo;
 
-    @ApiModelProperty(value = "房间类型")
+    @ApiModelProperty(value = "订单类型")
     private Integer orderType;
 
     @ApiModelProperty(value = "下单时间", access = "hidden")
@@ -57,15 +57,15 @@ public class Order extends PageEntity {
     private String guestsPhone;
 
     @ApiModelProperty(value = "订单总金额")
-    private float orderTotal;
+    private Float orderTotal;
 
     @ApiModelProperty(value = "折扣价格")
-    private float discountPrice;
+    private Float discountPrice;
 
     @ApiModelProperty(value = "实付金额")
-    private float actualAmount;
+    private Float actualAmount;
 
-    @ApiModelProperty(value = "订单状态 0-待支付 1-已支付 2-已取消 3-已退款")
+    @ApiModelProperty(value = "订单状态 0-待支付 1-已支付 2-已取消")
     private Integer orderStatus;
 
     @ApiModelProperty(value = "更新时间", access = "hidden")

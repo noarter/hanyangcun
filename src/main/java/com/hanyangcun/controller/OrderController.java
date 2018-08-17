@@ -90,6 +90,7 @@ public class OrderController {
                     || StringUtils.isBlank(order.getGuests()) || StringUtils.isBlank(order.getGuestsPhone()) || order.getGuestsSex() == null)
                 throw new ErrorCodeException(StatusCode.ILLEGAL_ARGUMENT.getCode(), StatusCode.ILLEGAL_ARGUMENT.getMsg());
             orderService.insert(order);
+            baseResponse.setData(order);
         } catch (ErrorCodeException e) {
             baseResponse.setCode(e.getCode());
             baseResponse.setMsg(e.getMsg());

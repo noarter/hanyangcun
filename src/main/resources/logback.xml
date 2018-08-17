@@ -11,7 +11,7 @@
         <!-- 正在记录的日志文件的路径及文件名 -->
         <file>${LOG_HOME}/${LOG_DIR}/hanyangcun_error.log</file>
 
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollcdingPolicy">
             <!--日志文件输出的文件名-->
             <fileNamePattern>${LOG_HOME}/${LOG_DIR}/error/hanyangcun_error-%d{yyyy-MM-dd}.%i.log.zip
             </fileNamePattern>
@@ -84,7 +84,7 @@
     <logger name="java.sql.PreparedStatement" level="DEBUG"/>
 
     <!-- 日志输出级别 -->
-    <root level="info">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE_ERROR"/>
         <appender-ref ref="FILE_INFO"/>

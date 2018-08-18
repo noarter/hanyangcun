@@ -91,6 +91,7 @@ public interface IOrderDao {
             "<if test=\"orderStatus != null\"> and order_status = #{orderStatus}</if>" +
             "<if test=\"orderTime != null\"> and order_time = #{orderTime}</if>" +
             "</where>" +
+            "order by update_time desc" +
             "</script>")
     @Results({
             @Result(column = "order_no", property = "orderNo"),

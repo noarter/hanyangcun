@@ -82,7 +82,7 @@ public class PayRecordServiceImpl implements IPayRecordService {
             throw new ErrorCodeException(400, "订单号有误");
         }
 
-        payRecord.setCreateTime(DateUtil.getLongTimeStamp());
+        payRecord.setCreateTime(System.currentTimeMillis());
         payRecord.setPayState(0);
         payRecord.setPayNo(GenerateUtil.generatePayNo());
         int i = payRecordDao.insert(payRecord);
@@ -273,7 +273,7 @@ public class PayRecordServiceImpl implements IPayRecordService {
             throw new ErrorCodeException(400, "退款失败(暂时不支持)");
         }
         payRecord1.setPayNo(pay_no);
-        payRecord1.setUpdateTime(DateUtil.getLongTimeStamp());
+        payRecord1.setUpdateTime(System.currentTimeMillis());
         payRecord1.setPayState(2);
         int u = payRecordDao.update(payRecord1);
         if (u < 1) {
@@ -283,7 +283,7 @@ public class PayRecordServiceImpl implements IPayRecordService {
         Order order1 = new Order();
         order1.setOrderNo(orderNo);
         order1.setOrderStatus(2);
-        order1.setUpdateTime(DateUtil.getLongTimeStamp());
+        order1.setUpdateTime(System.currentTimeMillis());
         u = orderDao.update(order1);
         if (u < 1) {
             log.error("订单退款异常,pay_no：{}", pay_no);
@@ -348,7 +348,7 @@ public class PayRecordServiceImpl implements IPayRecordService {
         }
 
         payRecord.setPayNo(pay_no);
-        payRecord.setUpdateTime(DateUtil.getLongTimeStamp());
+        payRecord.setUpdateTime(System.currentTimeMillis());
         payRecord.setPayState(1);
         payRecord.setTradeNo(tradeNo);
         int u = payRecordDao.update(payRecord);
@@ -360,7 +360,7 @@ public class PayRecordServiceImpl implements IPayRecordService {
         Order order1 = new Order();
         order1.setOrderNo(payRecord.getOrderNo());
         order1.setOrderStatus(1);
-        order1.setUpdateTime(DateUtil.getLongTimeStamp());
+        order1.setUpdateTime(System.currentTimeMillis());
         u = orderDao.update(order1);
         if (u < 1) {
             log.error("支付单出现异常,pay_no：{}", pay_no);
